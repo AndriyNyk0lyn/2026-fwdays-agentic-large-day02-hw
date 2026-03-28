@@ -1,0 +1,31 @@
+---
+description: "Code conventions for Excalidraw components and utilities"
+globs: packages/**/*.ts,packages/**/*.tsx
+alwaysApply: false
+---
+
+# Code Conventions
+
+## Components
+
+- Functional components + hooks ONLY (no class components)
+- Props interface: `{ComponentName}Props`
+- Named exports only (no default exports)
+- Colocated tests: `ComponentName.test.tsx`
+
+## TypeScript
+
+- Strict mode — no `any`, no `@ts-ignore`
+- Prefer `type` over `interface` for simple types
+- Import types: `import type { X } from "..."`
+
+## Files
+
+- kebab-case for files: `element-utils.ts`
+- PascalCase for components: `LayerUI.tsx`
+
+## How to verify
+
+- ESLint and types: `yarn test:code` and `yarn test:typecheck` from the repo root.
+- Named exports: spot-check new modules for `export default`; align with neighboring files in the same directory (this repo prefers named exports for components).
+- Colocation: new components should ship with or update `ComponentName.test.tsx` next to the component when behavior changes (see `testing.mdc`).

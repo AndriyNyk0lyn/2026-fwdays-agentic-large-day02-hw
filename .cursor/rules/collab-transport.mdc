@@ -1,0 +1,43 @@
+---
+description: Collaboration socket, Portal gates, and Firebase — fragile invariants
+globs: excalidraw-app/collab/**,excalidraw-app/data/firebase.ts
+alwaysApply: false
+---
+
+# Collaboration & persistence (`excalidraw-app`)
+
+Deep context: `docs/technical/code-notes.md` (Portal gate, remote restore ordering). Remote updates must **not** enter local undo/redo history (`AGENTS.md`).
+
+## Security
+
+- Do not relax encryption gates, origin checks, or inbound message validation for convenience. Treat transport and peers as untrusted or buggy.
+- Avoid logging room keys, tokens, raw collab payloads, or other secrets.
+
+## Portal socket gate
+
+`Portal.socketInitialized` is **not** set inside `Portal`. `Collab` sets it to `true` in a `finally` after the initial scene fetch (success or failure), and `Portal.close()` resets it. Changing init order without keeping that contract can drop broadcasts or enable them too early.
+
+```ts
+// ❌ BAD — assuming Portal opens the gate itself
+this.portal.socket = socket;
+// broadcasts may still be no-ops: isOpen() also needs roomId, roomKey, socketInitialized
+
+// ✅ GOOD — preserve Collab’s responsibility: set socketInitialized only after
+// the agreed init milestone (see Collab + Portal.isOpen()).
+```
+
+`isOpen()` requires **all** of: `socketInitialized`, `socket`, `roomId`, `roomKey`.
+
+## Remote scene pipeline
+
+- `restoreElements(remoteElements, existingElements)` must run **before** reconciliation with the local scene, not after — reordering can regenerate elements (e.g. `appState.newElement`) and break in-progress drawing. See the NOTE in `Collab.tsx` and code-notes §5.4.
+
+## Tests & validation
+
+- After behavior changes here, run targeted app tests and exercise collab manually when possible; prefer adding tests for message handling and init ordering when observable behavior changes.
+
+## How to verify
+
+- Automated: `yarn test:app --watch=false` from the repo root; add or extend tests when message handling or init ordering changes.
+- Manual: two browser sessions in the same room — confirm socket gate / `isOpen()` behavior (no premature broadcasts, no stuck “closed” after init), and that remote updates still skip local undo/redo as documented in `AGENTS.md` and `docs/technical/code-notes.md`.
+- Regression check: confirm `restoreElements(remoteElements, existingElements)` still runs before local reconciliation when touching the remote scene path (see NOTE in `Collab.tsx`).

@@ -1,0 +1,49 @@
+---
+description: TypeScript compiler expectations, ESLint typing rules, and import hygiene
+globs: packages/**/*.ts,packages/**/*.tsx,excalidraw-app/**/*.ts,excalidraw-app/**/*.tsx
+alwaysApply: false
+---
+
+# TypeScript (Excalidraw monorepo)
+
+Source of truth: root `tsconfig.json`, `packages/tsconfig.base.json`, `.eslintrc.json`, `AGENTS.md` (`yarn test:typecheck`, `yarn test:code`). Formatting: `@excalidraw/prettier-config` via `yarn test:other` / `yarn fix`.
+
+## Compiler baseline
+
+- **`strict: true`** everywhere — prefer correct types over `any`. Use unknown + narrowing at boundaries (untrusted JSON, network, storage).
+- Root config also sets **`noFallthroughCasesInSwitch`** and **`forceConsistentCasingInFileNames`** — keep switches explicit and paths’ casing consistent with imports.
+- **`isolatedModules: true`** (app/tsconfig) — avoid patterns that require whole-program types to emit valid JS (e.g. rely on `const enum` pitfalls carefully).
+
+## Imports (enforced by ESLint)
+
+- **Type-only imports:** use `import type { … }` / `import { type X }` per `@typescript-eslint/consistent-type-imports` (`fixStyle: separate-type-imports`).
+- **`import/order`:** groups + blank lines; `@excalidraw/**` is treated as external after other externals — follow existing file patterns.
+- **Restricted imports:**
+  - Do not import **`jotai`** directly — use **`editor-jotai`** or **`app-jotai`** (see `no-restricted-imports` in `.eslintrc.json`).
+  - Under **`packages/excalidraw/**`**: do not import from the **`@excalidraw/excalidraw`** barrel for value imports; use **direct relative paths** (type-only imports from the barrel are allowed).
+
+## Types and suppressions
+
+- Prefer **`type`** for simple object shapes; use **`interface`** when extending/merging is useful — match surrounding files.
+- Avoid **`any`**. If unavoidable, keep it **local** and document why.
+- Do not add broad **`@ts-ignore`**. Prefer **`@ts-expect-error`** with a **short reason** so removal breaks when the types fix the issue.
+
+```ts
+// ❌ BAD
+// @ts-ignore
+foo(bar);
+
+// ✅ BETTER
+// @ts-expect-error HarfBuzz WASM binding exposes non-standard `.buffer`
+foo(bar);
+```
+
+## Workspace paths
+
+- Use **`@excalidraw/*`** path aliases from `tsconfig` for packages — avoid deep fragile relative paths when a public package entry exists.
+
+## How to verify
+
+- From the repo root: `yarn test:typecheck` (TypeScript) and `yarn test:code` (ESLint, including import and typing rules).
+- After edits: `yarn fix:code` to apply safe auto-fixes, then re-run `yarn test:code` to confirm a clean lint pass.
+- Optional full gate: `yarn test:all` (see `AGENTS.md`).

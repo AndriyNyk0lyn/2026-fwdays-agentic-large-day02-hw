@@ -1,0 +1,30 @@
+---
+description: "Architecture constraints for Excalidraw"
+globs: packages/excalidraw/**
+alwaysApply: false
+---
+
+# Excalidraw Architecture
+
+## State Management
+
+- Custom state via actionManager — NOT Redux/Zustand/MobX
+- State updates: actionManager.dispatch() ONLY
+- State type: AppState (packages/excalidraw/types.ts)
+
+## Rendering
+
+- Canvas 2D rendering — NOT React DOM for drawing
+- Render pipeline: Scene → renderScene() → canvas context
+- DO NOT use react-konva, fabric.js, pixi.js
+
+## Dependencies
+
+- No new npm packages without explicit approval
+- Check packages/utils/ before adding external helpers
+
+## How to verify
+
+- Dependency changes: inspect `package.json` / `yarn.lock` in the PR — new packages need explicit approval; prefer `packages/utils/` (or existing internals) before adding externals.
+- State and mutations: code review that scene/editor mutations go through `actionManager` / documented sync paths, not ad-hoc global stores (see `AGENTS.md` for ActionManager and `syncActionResult()`).
+- Build sanity: `yarn test:typecheck` and `yarn build` (or `yarn build:packages` when only packages change) from the repo root.

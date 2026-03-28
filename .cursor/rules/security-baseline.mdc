@@ -1,0 +1,58 @@
+---
+description: Global security baseline for all code changes in this monorepo.
+alwaysApply: true
+---
+
+# Security baseline (Excalidraw monorepo)
+
+## Secrets and configuration
+
+- Never hardcode secrets, API keys, tokens, passwords, private URLs, or credentials. Use env vars and existing root-level `.env*` patterns (see `AGENTS.md`); never commit real secrets.
+- **Vite client exposure**: Only `VITE_*` (and other explicitly public mechanisms) belong in browser bundles. Do not read server-only env vars from `excalidraw-app` client code or ship them via `import.meta.env` without an intentional, reviewed public prefix.
+- Do not print env values in build output, Storybook, or example apps unless they are known-safe placeholders.
+
+## Untrusted input
+
+- Treat as untrusted: URL/search params, `postMessage`, WebSocket/collab messages, Firebase/remote payloads, pasted or imported `.excalidraw` / scene JSON, file uploads, `localStorage` / `sessionStorage`, and third-party API responses.
+- Validate and narrow types at boundaries (parse + schema or explicit guards) before mutating scene/store state or trusting redirect targets.
+- **Collaboration and persistence** (`excalidraw-app/collab/`, `excalidraw-app/data/firebase.ts`): assume peers and transport can be hostile or buggy; do not weaken encryption gates, origin checks, or message validation for convenience.
+
+## HTML, XSS, and rendering
+
+- Avoid `dangerouslySetInnerHTML` and raw HTML injection unless the user explicitly requests it **and** the change shows reviewed sanitization or a safe static template.
+- When rendering user- or document-derived strings in the DOM (labels, exports, embeds), prefer escaping or framework-safe paths consistent with existing patterns.
+
+## Auth, permissions, and “shortcuts”
+
+- Do not add production auth bypasses, mock-only gates that can ship enabled, hidden admin flags, or client-only “security” that replaces server-side or collab-room checks where the product expects them.
+- Prefer explicit capability checks over hiding controls in the UI alone.
+
+## Logging and errors
+
+- Do not log secrets, tokens, cookies, `Authorization` headers, encryption keys, room IDs tied to live sessions, or unnecessary PII. Redact or omit sensitive fields in debug and telemetry.
+- Ensure user-visible errors do not leak internal paths, stack traces with secrets, or token fragments.
+
+## When editing high-risk areas
+
+- For **collab**, **Firebase**, **redirects**, **import/export**, **encryption**, or **HTML rendering**, briefly note security impact in the assistant response (what could go wrong, what was preserved).
+
+## Examples
+
+```typescript
+// BAD — secret in client-accessible env
+const key = import.meta.env.SOME_PRIVATE_API_KEY;
+
+// BAD — trusting collab payload without validation
+applyRemoteScenePatch(message.scene);
+
+// GOOD — validate/narrow at boundary, then apply through existing sync paths
+const patch = remotePatchSchema.parse(message.payload);
+syncRemotePatch(patch);
+```
+
+## How to verify
+
+- Review the diff for hardcoded secrets, tokens, or private URLs; confirm sensitive values use env vars and match root `.env*` patterns in `AGENTS.md`.
+- In `excalidraw-app` client code: ensure only `VITE_*` (or other intentional public keys) appear in `import.meta.env` usage; no server-only variables in the bundle.
+- Search for risky patterns where relevant: e.g. new `dangerouslySetInnerHTML`, broad `postMessage` handlers without origin checks, or logging of headers/cookies/tokens.
+- Before merge on high-risk areas (collab, Firebase, import/export, encryption): run `yarn test:all` and note in the PR what was preserved (gates, validation, redaction).

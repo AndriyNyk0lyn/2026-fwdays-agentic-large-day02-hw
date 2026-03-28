@@ -1,0 +1,53 @@
+---
+description: "Testing conventions — Vitest, unit/integration scope, and e2e guidance"
+globs: **/*.test.ts,**/*.test.tsx,**/__tests__/**/*.ts,setupTests.ts,vitest.config.mts
+alwaysApply: false
+---
+
+# Testing Conventions
+
+## Stack (this repo)
+
+- **Runner**: Vitest (`yarn test` / `yarn test:app`), config `vitest.config.mts`, setup `setupTests.ts`
+- **Environment**: `jsdom` + `vitest-canvas-mock` + `@testing-library/jest-dom`; globals enabled (`describe` / `it` / `expect` without importing)
+- **Mocks**: `vi` from `vitest`; reuse helpers under `packages/excalidraw/tests/helpers/` when testing the app package
+
+## Where tests live
+
+- **Components**: colocate `ComponentName.test.tsx` next to the component (see `conventions.mdc`)
+- **Packages**: prefer `packages/<name>/tests/*.test.ts(x)` or `src/__tests__/` when that pattern already exists in the package
+
+## Unit vs integration (browser-style)
+
+| Layer | Focus | Examples here |
+| ----- | ----- | --------------- |
+| **Unit** | Pure functions, small modules, no full UI tree | `packages/math/tests`, `packages/utils/tests` |
+| **Integration** | React + user events + mocked boundaries, still in Vitest/jsdom | Most `packages/excalidraw/tests/*.test.tsx` |
+
+Keep tests **deterministic**: fixed seeds/times where needed, avoid real network; stub `fetch` or modules with `vi.mock` when testing behavior that would hit the network.
+
+## Assertions and style
+
+- Prefer Vitest’s `expect` API (already global); keep assertions **specific** (`toEqual`, `toMatchObject`) over vague truthiness checks
+- For DOM: `@testing-library/react` patterns — query by role/label, `userEvent` over fire-and-forget `click` when the suite already uses it
+- One **behavior** per `it`; use `describe` blocks to group fixtures or API surfaces
+
+## End-to-end (e2e)
+
+- This monorepo does **not** currently ship Playwright/Cypress in root `package.json`. If you add e2e: **one** tool, run in CI on a built app, stable selectors (roles/testids), minimal flake (retries only where justified), and keep e2e count small for critical paths only.
+
+## Commands
+
+- `yarn test` — watch Vitest
+- `yarn test:all` — typecheck, lint, prettier, Vitest once (`--watch=false`)
+- `yarn test:coverage` — coverage with thresholds from `vitest.config.mts`
+
+## If tests are missing for new code
+
+Add the **smallest** test that proves the contract: pure logic → unit test; UI regression → RTL test following neighboring files in the same package. Do not add new test dependencies without matching repo policy (see `architecture.mdc` for package approval).
+
+## How to verify
+
+- While iterating: `yarn test` (Vitest watch) or run a scoped pattern your package documents.
+- CI-style single run: `yarn test:app --watch=false` (see `AGENTS.md`); for the full gate including typecheck, lint, and Prettier: `yarn test:all`.
+- Coverage or threshold changes: `yarn test:coverage` and compare with `vitest.config.mts` thresholds.
