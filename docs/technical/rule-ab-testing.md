@@ -40,5 +40,5 @@ Swap A/B labels in your notes if you prefer “with rule” = A; keep the doc co
 
 ## Where to log results
 
-- Per-rule log: `docs/experiments/<rule-name>-ab-results.md`
+- Per-rule log: `docs/experiments/<rule-name>-ab-results.md` (examples: `typescript-mdc-ab-results.md`, `testing-mdc-ab-results.md`)
 - Optional rubric alignment test: see `packages/utils/tests/typescriptMdcRuleSignals.test.ts` (typescript.mdc example).
