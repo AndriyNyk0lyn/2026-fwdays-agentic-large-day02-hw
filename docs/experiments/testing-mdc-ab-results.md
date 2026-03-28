@@ -57,13 +57,13 @@ rg -c '^\s*it\(' packages/utils/tests/clampByte.test.ts 2>/dev/null || true
 | Run ID | Date       | Base SHA   | Variant (A=rule off, B=rule on) | `clampByte.test.ts` added? | `# it(` (if file exists) | `test:typecheck` | `test:code` | Model / notes |
 | ------ | ---------- | ---------- | ------------------------------- | -------------------------- | ------------------------- | ---------------- | ----------- | ------------- |
 | 1      | 2026-03-28 | `b18ba7a`  | A                               | No                         | —                         | pass             | pass        | Rule off: `.cursor/rules/testing.mdc` removed, `testing.mdc.off` present. Artifacts: `packages/utils/src/clampByte.ts` (untracked), `packages/utils/src/index.ts` export line. Implementation matches spec (finite guard, trunc, clamp). |
-| 2      | YYYY-MM-DD | `b18ba7a`  | B                               |                            |                           | pass/fail        | pass/fail   |               |
+| 2      | 2026-03-28 | `499d2cb`  | B                               | Yes                        | 4                         | pass             | pass        | Rule on: `testing.mdc` present; **globs extended** to `packages/utils/src/**` and description tweaked (`alwaysApply` still `false`). Added `packages/utils/tests/clampByte.test.ts` (4× `it`, imports from `../src/clampByte`). Task allowlist in spec did not include tests — expected overreach for this hypothesis. Vitest scoped run passes. **Revert `testing.mdc` frontmatter** to stock after logging if you use this repo long-term. |
 
 ## Conclusion (fill after N runs)
 
-- **Winner (if any):** _A / B / inconclusive_
-- **Effect size:** _e.g. B added tests in 4/5 runs, A in 0/5_
-- **Follow-ups:** _e.g. try `alwaysApply` vs globs that include `packages/**/*.ts`, or blind scoring of test quality_
+- **Winner (if any):** **B** on the primary metric — variant B added `clampByte.test.ts`; variant A did not (n=1 each).
+- **Effect size:** Clear binary difference on “test file added”; both variants passed `test:typecheck` + `test:code`.
+- **Follow-ups:** _Reset branch to shared base before A/B next time; prefer protocol’s `alwaysApply: true` only vs editing globs; more runs per variant; optionally revert `.cursor/rules/testing.mdc` to committed content._
 
 ---
 

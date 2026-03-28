@@ -1,6 +1,6 @@
 ---
-description: "Testing conventions — Vitest, unit/integration scope, and e2e guidance"
-globs: **/*.test.ts,**/*.test.tsx,**/__tests__/**/*.ts,setupTests.ts,vitest.config.mts
+description: "Testing conventions — Vitest, unit/integration scope, and e2e guidance, always create tests for utils and helpers"
+globs: **/*.test.ts,**/*.test.tsx,**/__tests__/**/*.ts,setupTests.ts,vitest.config.mts,packages/utils/src/**
 alwaysApply: false
 ---
 
