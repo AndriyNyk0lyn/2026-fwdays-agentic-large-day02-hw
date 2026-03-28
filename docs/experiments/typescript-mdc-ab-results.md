@@ -5,11 +5,13 @@
 
 ## Fixed task spec (do not change mid-experiment)
 
-Describe one repeatable task here, for example:
-
-- **Goal:** _e.g. Add a typed helper in `packages/utils` and call it from one `excalidraw-app` component._
-- **Constraints:** _e.g. No new dependencies; follow existing patterns in the touched package._
-- **Done when:** _e.g. `yarn test:typecheck` and `yarn test:code` pass; PR-sized diff._
+- **Goal:** Add a small runtime parser in `@excalidraw/utils` that turns **untrusted** input into an optional positive integer.
+- **Deliverables:**
+  1. New file `packages/utils/src/parsePositiveInt.ts` exporting **`parsePositiveInt(value: unknown): number | undefined`**. It must return a **finite integer `n` with `n > 0`** when `value` is a positive whole number (accept `number` that is an integer `> 0`, and **string** values whose trimmed content is digits only and parse to an integer `> 0`, e.g. `"42"` → `42`; reject `0`, negatives, decimals, `NaN`, `Infinity`, empty string, non-string/non-number types).
+  2. New tests `packages/utils/tests/parsePositiveInt.test.ts` covering at least: valid positive number, valid numeric string, reject `0`/negative/decimal/`NaN`/`Infinity`/non-numeric string/wrong types.
+  3. Re-export the function from `packages/utils/src/index.ts` (same pattern as other `src/*.ts` exports).
+- **Constraints:** Do **not** add dependencies. Touch **only** `packages/utils/src/parsePositiveInt.ts`, `packages/utils/tests/parsePositiveInt.test.ts`, and `packages/utils/src/index.ts`. Do **not** edit `packages/excalidraw/data/restore.ts`, `packages/excalidraw/types.ts`, `packages/excalidraw/actions/manager.ts`, or `packages/excalidraw/scene/renderer.ts`.
+- **Done when:** From repo root, `yarn test:typecheck` and `yarn test:code` pass; `yarn test:app --watch=false packages/utils/tests/parsePositiveInt.test.ts` passes.
 
 ## Session protocol
 
