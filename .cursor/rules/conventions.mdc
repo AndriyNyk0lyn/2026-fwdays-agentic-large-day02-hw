@@ -9,15 +9,21 @@ alwaysApply: false
 ## Components
 
 - Functional components + hooks ONLY (no class components)
-- Props interface: `{ComponentName}Props`
+- Props shape name: `{ComponentName}Props`
 - Named exports only (no default exports)
 - Colocated tests: `ComponentName.test.tsx`
 
 ## TypeScript
 
 - Strict mode — no `any`, no `@ts-ignore`
-- Prefer `type` over `interface` for simple types
+- Prefer `type` for unions, intersections, and simple aliases; use `interface` for extensible object shapes when it reads better. For props, keep the name `{ComponentName}Props` and follow the neighboring file's existing pattern.
 - Import types: `import type { X } from "..."`
+
+## Examples
+
+- Props via `type`: `type ContextMenuProps = { ... }`
+- Props via `interface`: `interface LayerUIProps { ... }`
+- Non-props alias: `type AppProps = Merge<...>`
 
 ## Files
 
@@ -29,3 +35,4 @@ alwaysApply: false
 - ESLint and types: `yarn test:code` and `yarn test:typecheck` from the repo root.
 - Named exports: spot-check new modules for `export default`; align with neighboring files in the same directory (this repo prefers named exports for components).
 - Colocation: new components should ship with or update `ComponentName.test.tsx` next to the component when behavior changes (see `testing.mdc`).
+- Props/type-vs-interface: in PR review, compare the new declaration with nearby files in the same folder and ensure the chosen form matches this rule and the examples above; there is no repo rule that all props must be `type` or all props must be `interface`.

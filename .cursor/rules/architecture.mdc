@@ -9,7 +9,7 @@ alwaysApply: false
 ## State Management
 
 - Custom state via actionManager — NOT Redux/Zustand/MobX
-- State updates: actionManager.dispatch() ONLY
+- Prefer actionManager.dispatch() for scene/editor mutations tied to `AppState` (`packages/excalidraw/types.ts`); local component state via `this.setState()` is acceptable for instance-scoped UI state (for example `contextMenu`, `activeEmbeddable`, `editingFrame`, `bindMode`, `selectedLinearElement`, `errorMessage`)
 - State type: AppState (packages/excalidraw/types.ts)
 
 ## Rendering
@@ -26,5 +26,5 @@ alwaysApply: false
 ## How to verify
 
 - Dependency changes: inspect `package.json` / `yarn.lock` in the PR — new packages need explicit approval; prefer `packages/utils/` (or existing internals) before adding externals.
-- State and mutations: code review that scene/editor mutations go through `actionManager` / documented sync paths, not ad-hoc global stores (see `AGENTS.md` for ActionManager and `syncActionResult()`).
+- State and mutations: code review that scene/editor mutations go through `actionManager` / documented sync paths, while local instance-scoped UI state remains on `this.setState()` instead of new ad-hoc stores (see `AGENTS.md` for ActionManager and `syncActionResult()`).
 - Build sanity: `yarn test:typecheck` and `yarn build` (or `yarn build:packages` when only packages change) from the repo root.

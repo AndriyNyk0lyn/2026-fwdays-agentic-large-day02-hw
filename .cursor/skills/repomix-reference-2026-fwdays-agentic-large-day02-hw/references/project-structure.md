@@ -5,18 +5,34 @@
   Dockerfile (5 lines)
   tasks.json (50 lines)
 .cursor/
+  commands/
+    code-review.md (35 lines)
+    security-audit.md (39 lines)
   rules/
-    architecture.mdc (24 lines)
-    conventions.mdc (25 lines)
-    do-not-touch.mdc (20 lines)
-    testing.mdc (47 lines)
+    architecture.mdc (30 lines)
+    collab-transport.mdc (43 lines)
+    conventions.mdc (31 lines)
+    do-not-touch.mdc (25 lines)
+    security-baseline.mdc (58 lines)
+    testing.mdc (53 lines)
+    typescript.mdc (49 lines)
   skills/
     build-verify/
       SKILL.md (63 lines)
     codebase-explore/
       SKILL.md (83 lines)
+    create-command/
+      reference.md (162 lines)
+      SKILL.md (80 lines)
     memory-bank-update/
       SKILL.md (61 lines)
+    repomix-reference-2026-fwdays-agentic-large-day02-hw/
+      references/
+        files.md (249016 lines)
+        project-structure.md (1065 lines)
+        summary.md (66 lines)
+        tech-stack.md (61 lines)
+      SKILL.md (79 lines)
 .github/
   assets/
     crowdin.svg (6 lines)
@@ -120,6 +136,9 @@ dev-docs/
   tsconfig.json (7 lines)
   vercel.json (4 lines)
 docs/
+  experiments/
+    testing-mdc-ab-results.md (82 lines)
+    typescript-mdc-ab-results.md (56 lines)
   memory/
     activeContext.md (16 lines)
     decisionLog.md (129 lines)
@@ -135,6 +154,7 @@ docs/
     architecture.md (316 lines)
     code-notes.md (574 lines)
     dev-setup.md (289 lines)
+    rule-ab-testing.md (44 lines)
 examples/
   with-nextjs/
     src/
@@ -1006,6 +1026,7 @@ packages/
     tests/
       export.test.ts (132 lines)
       geometry.test.ts (163 lines)
+      typescriptMdcRuleSignals.test.ts (36 lines)
       utils.unmocked.test.ts (70 lines)
       withinBounds.test.ts (264 lines)
     CHANGELOG.md (11 lines)

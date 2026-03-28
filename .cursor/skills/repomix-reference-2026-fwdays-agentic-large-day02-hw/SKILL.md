@@ -5,7 +5,7 @@ description: Reference codebase for 2026 Fwdays Agentic Large Day02 Hw. Use this
 
 # 2026 Fwdays Agentic Large Day02 Hw Codebase Reference
 
-933 files | 245283 lines | 3413083 tokens
+949 files | 496277 lines | 6845499 tokens
 
 ## Overview
 

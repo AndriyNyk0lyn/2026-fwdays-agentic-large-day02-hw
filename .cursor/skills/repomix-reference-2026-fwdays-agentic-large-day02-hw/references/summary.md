@@ -37,23 +37,24 @@ This skill contains the following reference files:
 
 ## Statistics
 
-933 files | 245,283 lines
+949 files | 496,277 lines
 
 | Language | Files | Lines |
 |----------|------:|------:|
-| TypeScript | 312 | 82,356 |
+| TypeScript | 313 | 82,392 |
 | TypeScript (TSX) | 289 | 84,621 |
 | JSON | 91 | 41,932 |
 | SCSS | 82 | 9,549 |
+| Markdown | 44 | 256,705 |
 | MDX | 33 | 3,628 |
-| Markdown | 32 | 5,920 |
 | JavaScript | 25 | 3,115 |
 | No Extension | 21 | 266 |
 | YAML | 14 | 309 |
 | SVG | 13 | 85 |
-| Other | 21 | 13,502 |
+| Other | 24 | 13,675 |
 
 **Largest files:**
+- `.cursor/skills/repomix-reference-2026-fwdays-agentic-large-day02-hw/references/files.md` (249,016 lines)
 - `packages/excalidraw/components/App.tsx` (12,818 lines)
 - `packages/excalidraw/fonts/ComicShanns/ComicShanns-Regular.sfd` (12,221 lines)
 - `packages/excalidraw/tests/history.test.tsx` (5,307 lines)
@@ -63,4 +64,3 @@ This skill contains the following reference files:
 - `packages/excalidraw/components/icons.tsx` (2,494 lines)
 - `packages/excalidraw/CHANGELOG.md` (2,466 lines)
 - `packages/element/src/elbowArrow.ts` (2,309 lines)
-- `packages/excalidraw/renderer/interactiveScene.ts` (2,090 lines)
