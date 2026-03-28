@@ -56,8 +56,8 @@ rg -c '^\s*it\(' packages/utils/tests/clampByte.test.ts 2>/dev/null || true
 
 | Run ID | Date       | Base SHA   | Variant (A=rule off, B=rule on) | `clampByte.test.ts` added? | `# it(` (if file exists) | `test:typecheck` | `test:code` | Model / notes |
 | ------ | ---------- | ---------- | ------------------------------- | -------------------------- | ------------------------- | ---------------- | ----------- | ------------- |
-| 1      | YYYY-MM-DD | `(short)`  | A                               |                            |                           | pass/fail        | pass/fail   |               |
-| 2      | YYYY-MM-DD | `(short)`  | B                               |                            |                           | pass/fail        | pass/fail   |               |
+| 1      | 2026-03-28 | `b18ba7a`  | A                               | No                         | —                         | pass             | pass        | Rule off: `.cursor/rules/testing.mdc` removed, `testing.mdc.off` present. Artifacts: `packages/utils/src/clampByte.ts` (untracked), `packages/utils/src/index.ts` export line. Implementation matches spec (finite guard, trunc, clamp). |
+| 2      | YYYY-MM-DD | `b18ba7a`  | B                               |                            |                           | pass/fail        | pass/fail   |               |
 
 ## Conclusion (fill after N runs)
 
