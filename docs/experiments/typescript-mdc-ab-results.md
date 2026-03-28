@@ -42,14 +42,14 @@ git diff --name-only | rg '\.(tsx?)$' | xargs rg ': any\b' 2>/dev/null || true
 
 | Run ID | Date       | Base SHA   | Variant (A=rule off, B=rule on) | Model / notes | `test:typecheck` | `test:code` | `@ts-ignore` in diff | `: any` in diff | Time to green (min) | Subjective 1–5 |
 | ------ | ---------- | ---------- | ------------------------------- | ------------- | ---------------- | ----------- | -------------------- | --------------- | ------------------- | -------------- |
-| 1      | YYYY-MM-DD | `(short)`  | A                               |               | pass/fail        | pass/fail   | 0                    |                 |                     |                |
-| 2      | YYYY-MM-DD | `(short)`  | B                               |               | pass/fail        | pass/fail   | 0                    |                 |                     |                |
+| 1      | 2026-03-28 | `6a7c185`  | A                               | Rule off: `.cursor/rules/typescript.mdc` → `typescript.mdc.off` (tracked delete + untracked `.off`). Task artifacts: `packages/utils/src/parsePositiveInt.ts`, `packages/utils/tests/parsePositiveInt.test.ts`, `packages/utils/src/index.ts` re-export. Heuristic `rg` on those paths only. | pass             | pass        | 0                    | 0               | —                   | —              |
+| 2      | 2026-03-28 | `6a7c185`  | B                               | Rule on: `.cursor/rules/typescript.mdc` present. Task artifacts: same three files; implementation reordered (positive branch first for `number` / `string`), JSDoc on export; tests overlap spec (e.g. added `"1e2"` case, dropped some A-only cases like `"007"` / `"12 34"`). Heuristic `rg` on task paths only. | pass             | pass        | 0                    | 0               | —                   | —              |
 
 ## Conclusion (fill after N runs)
 
-- **Winner (if any):** _A / B / inconclusive_
-- **Effect size:** _e.g. B had 2 fewer lint-fix rounds on average_
-- **Follow-ups:** _e.g. tighten globs, add example to rule, merge with ESLint docs_
+- **Winner (if any):** **Inconclusive** on this single pair — both variants achieved pass/pass typecheck+lint, 0 `@ts-ignore`, 0 `: any` on task files.
+- **Effect size:** No measurable difference on the chosen heuristics; the task may be too easy or ESLint/typecheck already constrain outcomes without the Cursor rule.
+- **Follow-ups:** _e.g. repeat with a harder task (restricted imports under `packages/excalidraw`), more runs per variant, or log wall-clock / revision rounds._
 
 ## Rubric regression test
 
